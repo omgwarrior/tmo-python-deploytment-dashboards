@@ -1,0 +1,26 @@
+
+3. Save the file as `README.md`.
+
+#### 2. Create `dashboard.json`
+
+Create a new file named `dashboard.json` and add the following content:
+
+```json
+{
+    "dashboard": {
+        "description": "HTTP 400 Response Ratio Monitor",
+        "title": "HTTP 400 Ratio Dashboard",
+        "panels": [
+            {
+                "type": "table",
+                "search": {
+                    "query": "index=your_index sourcetype=your_sourcetype status=* | eval status_category = if(status >= 400 AND status < 500, \"4xx\", \"Other\") | stats count by status_category | eval ratio = if('4xx' > 0, ('4xx' / ('4xx' + Other)) * 100, 0) | where ratio >= (10 / 20) * 100 | eval timestamp = strftime(_time, \"%Y-%m-%d %H:%M:%S\") | table timestamp, ratio",
+                    "earliest_time": "-24h@h",
+                    "latest_time": "now"
+                },
+                "title": "HTTP 400 Ratio Table",
+                "options": {"drilldown": "none"}
+            }
+        ]
+    }
+}
